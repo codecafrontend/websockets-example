@@ -11,24 +11,20 @@ const createChatServer = (app) => {
         },
     ];
 
-    expressWs(app);
+    const wsApp = expressWs(app);
 
-    app.ws('/chat', (wss, _) => {
-        wss.on('connection', (ws) => {
-            ws.on('message', (message) => {
-                console.log('received: %s', message);
-    
-                allMessages.push(JSON.parse(atob(message)));
-    
-                // Рассылаем сообщение всем подключенным клиентам
-                wss.clients.forEach(function each(client) {
-                    if (client !== ws && client.readyState === WebSocket.OPEN) {
-                        client.send(message.toString());
-                    }
-                });
+    app.ws('/chat', (ws, _) => {
+        ws.on('message', (message) => {
+            console.log('received: %s', message);
+
+            allMessages.push(JSON.parse(atob(message)));
+
+            // Рассылаем сообщение всем подключенным клиентам
+            wsApp.getWss().clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(message.toString());
+                }
             });
-    
-            ws.send('connection ready');
         });
     })
 

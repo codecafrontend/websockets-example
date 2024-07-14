@@ -14,7 +14,7 @@ export type UseMessagesProps = {
     onBeforeReceiveMessages?: () => void;
 };
 
-const WS_HOST = import.meta.env.VITE_IS_DEV ? 'localhost:8001' : location.host;
+const WS_HOST = import.meta.env.VITE_WS_HOST || location.host;
 
 export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
     const user = useContext(UserContext);
@@ -36,32 +36,39 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
         updateMessages(history);
     }, [updateMessages]);
 
+    const reconnect = useCallback(() => {
+        setTimeout(() => {
+            setWs(undefined);
+        }, 2000);
+    }, []);
+
     useEffect(() => {
         if (!ws) {
             const socket = new WebSocket(`ws://${WS_HOST}/chat`);
 
             socket.onmessage = (event) => {
-                if (event.data === 'connection ready') {
-                    setIsOnline(true);
-                } else {
-                    onBeforeReceiveMessages?.();
-                    const message = JSON.parse(atob(event.data));
-                    updateMessages([message]);
-                }
+                onBeforeReceiveMessages?.();
+                const message = JSON.parse(atob(event.data));
+                updateMessages([message]);
             };
+
+            socket.onopen = () => {
+                setIsOnline(true);
+            }
 
             socket.onclose = () => {
                 setIsOnline(false);
             };
+            
             socket.onerror = () => {
                 setIsOnline(false);
+                reconnect();
             };
 
             setWs(socket);
+            loadHistory();
         }
-        
-        loadHistory();
-    }, []);
+    }, [ws, reconnect]);
 
     const sendMessage = useCallback(
         (text: string) => {
