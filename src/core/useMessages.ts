@@ -14,7 +14,7 @@ export type UseMessagesProps = {
     onBeforeReceiveMessages?: () => void;
 };
 
-const WS_HOST = import.meta.env.VITE_WS_HOST || location.host;
+const WS_ORIGIN = import.meta.env.VITE_WS_ORIGIN || `wss://${location.host}`;
 
 export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
     const user = useContext(UserContext);
@@ -44,7 +44,7 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
 
     useEffect(() => {
         if (!ws) {
-            const socket = new WebSocket(`ws://${WS_HOST}/chat`);
+            const socket = new WebSocket(`${WS_ORIGIN}/chat`);
 
             socket.onmessage = (event) => {
                 onBeforeReceiveMessages?.();
@@ -59,7 +59,7 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
             socket.onclose = () => {
                 setIsOnline(false);
             };
-            
+
             socket.onerror = () => {
                 setIsOnline(false);
                 reconnect();

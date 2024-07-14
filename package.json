@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:force": "eslint --fix src && prettier --write src && stylelint --fix 'src/**/*.css'",
     "preview": "vite preview",
-    "start:dev:client": "VITE_WS_HOST='localhost:8001' vite build --watch",
+    "start:dev:client": "VITE_WS_ORIGIN='ws://localhost:8001' vite build --watch",
     "start:dev:server": "nodemon --config nodemon.json | browser-sync start --config browser-sync.json",
     "start:dev": "npm run build && run-p start:dev:client start:dev:server",
     "start:production": "npm run build && node ./server/index.cjs"
