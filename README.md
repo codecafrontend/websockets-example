@@ -4,6 +4,8 @@ The project illustrates an example of a simple chat based on [WebSockets](https:
 
 The server (Express) code is in the `server` folder.
 
+## [Live Demo](https://websockets-example-8awk.onrender.com/)
+
 Local launch:
 
 ```js
