@@ -65,10 +65,9 @@ export function ChatPage() {
 
     return (
         <div className="Chat">
-            <h1>
+            <h1 className="Chat__heading">
                 {name}
-                's chat
-                ({isOnline ? 'online' : 'offline'})
+                's chat ({isOnline ? 'online' : 'offline'})
             </h1>
 
             <div

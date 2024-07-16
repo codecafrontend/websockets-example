@@ -26,7 +26,10 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
     const updateMessages = useCallback((messagesList: Message[]) => {
         setMessages((state) => ({
             ...state,
-            ...messagesList.reduce((acc, curr) => ({...acc, [curr.id]: curr}), {}),
+            ...messagesList.reduce(
+                (acc, curr) => ({ ...acc, [curr.id]: curr }),
+                {},
+            ),
         }));
     }, []);
 
@@ -48,13 +51,13 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
 
             socket.onmessage = (event) => {
                 onBeforeReceiveMessages?.();
-                const message = JSON.parse(atob(event.data));
+                const message = JSON.parse(event.data);
                 updateMessages([message]);
             };
 
             socket.onopen = () => {
                 setIsOnline(true);
-            }
+            };
 
             socket.onclose = () => {
                 setIsOnline(false);
@@ -68,7 +71,7 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
             setWs(socket);
             loadHistory();
         }
-    }, [ws, reconnect]);
+    }, [ws, reconnect, loadHistory]);
 
     const sendMessage = useCallback(
         (text: string) => {
@@ -83,7 +86,7 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
                 timestamp: new Date().toISOString(),
             };
 
-            ws.send(btoa(JSON.stringify(message)));
+            ws.send(JSON.stringify(message));
 
             updateMessages([message]);
         },

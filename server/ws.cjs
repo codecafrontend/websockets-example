@@ -15,9 +15,9 @@ const createChatServer = (app) => {
 
     app.ws('/chat', (ws, _) => {
         ws.on('message', (message) => {
-            console.log('received: %s', message);
+            console.log('New message: %s', message);
 
-            allMessages.push(JSON.parse(atob(message)));
+            allMessages.push(JSON.parse(message));
 
             // Рассылаем сообщение всем подключенным клиентам
             wsApp.getWss().clients.forEach((client) => {

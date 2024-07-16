@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const morgan = require('morgan');
 
 const { createChatServer } = require('./ws.cjs');
 
@@ -15,6 +16,8 @@ app.use(
         allowedHeaders: ['Content-Type'],
     }),
 );
+
+app.use(morgan('combined'));
 
 createChatServer(app);
 

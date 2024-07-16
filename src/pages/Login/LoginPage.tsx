@@ -23,8 +23,9 @@ export const LoginPage: FC<LoginPageProps> = ({ onSetUser }) => {
 
     return (
         <form onSubmit={handleFormSubmit} className="LoginForm">
-            <label htmlFor="name">Enter name:</label>
-            <input id="name" name="name" />
+            <label htmlFor="name">Enter a username to open the chat:</label>
+            <input id="name" name="name" required />
+            <button type="submit">Let's go!</button>
         </form>
     );
 };
